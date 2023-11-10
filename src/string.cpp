@@ -28,7 +28,7 @@ std::string String::render() {
     std::wstring new_string = string;
 
     for (const auto &modifier : modifiers)
-        new_string = modifier->apply(string);
+        new_string = modifier->apply(new_string);
 
     return std::string(converter.to_bytes(new_string));
 }

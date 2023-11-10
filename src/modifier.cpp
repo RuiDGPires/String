@@ -5,20 +5,8 @@
 using namespace rui;
 
 WordColorer::WordColorer(size_t i, Color c) {
-    this->index = new size_t(i);
-    this->color = c;
-    this->mine = true;
-}
-
-WordColorer::WordColorer(size_t *i, Color c) {
     this->index = i;
     this->color = c;
-    this->mine = false;
-}
-
-WordColorer::~WordColorer() {
-    if (mine)
-        delete this->index;
 }
 
 #define BLUE_STR    "\e[1;36m"
@@ -54,17 +42,16 @@ void WordColorer::set_index(size_t i) {
     if (cache)
         cache->invalidate();
 
-    *index = i;
+    index = i;
 }
 
 size_t WordColorer::get_index() const {
-    return *index;
+    return index;
 }
 
 std::wstring WordColorer::apply(const std::wstring &str) const {
     size_t current_word = 0;
     bool within_word = false;
-    size_t index = *this->index;
 
     std::wstring new_str= L"";
 

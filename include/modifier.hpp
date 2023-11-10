@@ -23,7 +23,7 @@ namespace rui {
 
     struct WordColorer : public Modifier {
         private:
-        size_t *index;
+        size_t index;
         bool mine;
         Color color;
 
@@ -31,8 +31,7 @@ namespace rui {
 
         /* Indexes are 1 - based*/
         WordColorer(size_t, Color);
-        WordColorer(size_t*, Color);
-        ~WordColorer();
+        ~WordColorer() = default;
 
         void set_index(size_t);
         size_t get_index() const;
