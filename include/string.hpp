@@ -21,6 +21,7 @@ namespace rui {
 
         public:
             String();
+            String(const String &s);
             String(const std::string &s);
             String(const std::wstring &s);
             String(const char *s);
@@ -41,11 +42,23 @@ namespace rui {
             String &operator=(const std::wstring &other);
             String &operator=(const std::string & other);
 
+            
+            String &append(std::wstring::iterator _first, std::wstring::iterator _last);
+            String &append(const String &other);
+            String &append(const char *other);
+            String &append(const std::wstring &other);
+            String &append(const std::string & other);
+
             String &operator+=(const String &other);
             String &operator+=(const char *other);
             String &operator+=(const std::wstring &other);
             String &operator+=(const std::string & other);
+
+            String operator+(const String &other);
+            String operator+(const char *other);
+            String operator+(const std::wstring &other);
+            String operator+(const std::string & other);
     };
 }
 
-std::ostream &operator<<(std::ostream &out, rui::String &s);
+std::ostream &operator<<(std::ostream &out, rui::String s);

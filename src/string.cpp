@@ -8,6 +8,12 @@ String::String() {
     this->cache = std::make_shared<Cache<std::string>>(render());
 }
 
+String::String(const String &s) {
+    string = s.string;
+    this->cache = s.cache;
+    this->modifiers = s.modifiers;
+}
+
 String::String(const std::string &s) {
     string = converter.from_bytes(s);
     this->cache = std::make_shared<Cache<std::string>>(render());
@@ -84,32 +90,92 @@ String& String::operator=(const std::string & other) {
     return *this;
 }
 
-String &String::operator+=(const String &other) {
+String &String::append(std::wstring::iterator _first, std::wstring::iterator _last) {
+    this->string.append(_first, _last);
+    this->cache->invalidate();
+    return (*this);
+}
+
+String &String::append(const String &other) {
     this->string += other.string;
     this->modifiers.insert(this->modifiers.end(), other.modifiers.begin(), other.modifiers.end());
     this->cache->invalidate();
     return (*this);
 }
 
-String &String::operator+=(const char *other) {
+String &String::append(const char *other) {
     this->string += converter.from_bytes(other);
     this->cache->invalidate();
     return (*this);
 }
-
-String &String::operator+=(const std::wstring &other) {
+String &String::append(const std::wstring &other) {
     this->string += other;
     this->cache->invalidate();
     return (*this);
 }
-
-String &String::operator+=(const std::string & other) {
+String &String::append(const std::string & other) {
     this->string += converter.from_bytes(other);
     this->cache->invalidate();
     return (*this);
 }
 
-std::ostream &operator<<(std::ostream &out, String &s) {
-    return out << s.str();
+String &String::operator+=(const String &other) {
+    return this->append(other);
 }
 
+String &String::operator+=(const char *other) {
+    return this->append(other);
+}
+
+String &String::operator+=(const std::wstring &other) {
+    return this->append(other);
+}
+
+String &String::operator+=(const std::string & other) {
+    return this->append(other);
+}
+
+String String::operator+(const String &other) {
+    String new_string;
+
+    new_string.string = this->string + other.string;
+    new_string.modifiers = this->modifiers;
+    new_string.modifiers.insert(new_string.modifiers.end(), other.modifiers.begin(), other.modifiers.end());
+    new_string.cache->invalidate();
+
+    return new_string;
+}
+
+String String::operator+(const char *other) {
+    String new_string;
+
+    new_string.string = this->string + new_string.converter.from_bytes(other);
+    new_string.modifiers = this->modifiers;
+    new_string.cache->invalidate();
+
+    return new_string;
+}
+
+String String::operator+(const std::wstring &other) {
+    String new_string;
+
+    new_string.string = this->string + other;
+    new_string.modifiers = this->modifiers;
+    new_string.cache->invalidate();
+
+    return new_string;
+}
+
+String String::operator+(const std::string & other) {
+    String new_string;
+
+    new_string.string = this->string + new_string.converter.from_bytes(other);
+    new_string.modifiers = this->modifiers;
+    new_string.cache->invalidate();
+
+    return new_string;
+}
+
+std::ostream &operator<<(std::ostream &out, String s) {
+    return out << s.str();
+}

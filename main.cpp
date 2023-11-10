@@ -21,7 +21,7 @@ int main(int argc, const char *argv[]) {
     s += " привет!";
     cout << s << "\n";
     colorer->set_index(colorer->get_index() - 1);
-    cout << s << "\n";
+    cout << s + " 123" << "\n";
 
     return 0;
 }
