@@ -18,12 +18,12 @@ TEST_EXE_FILES:=$(TEST_CPP_FILES:$(TEST_FOLDER)/%.cpp=$(BUILD_FOLDER)/$(TEST_FOL
 
 STATIC_TARGET:=$(BUILD_FOLDER)/lib$(STATIC_TARGET_NAME).a
 
-#---------
+# ---------
 
 CC:=g++
 FLAGS:=-Wall -Wextra -pedantic -I$(HEADER_FOLDER)
 
-#---------
+# ---------
 
 .PHONY: default
 default: $(BUILD_FOLDER)/$(EXAMPLE_FOLDER)/$(DEFAULT)
@@ -31,11 +31,24 @@ default: $(BUILD_FOLDER)/$(EXAMPLE_FOLDER)/$(DEFAULT)
 .PHONY: tests
 tests: $(TEST_EXE_FILES)
 
+# -------------
+# Build example
+# _____________
+
 $(BUILD_FOLDER)/$(EXAMPLE_FOLDER)/%: $(EXAMPLE_FOLDER)/%.cpp $(STATIC_TARGET) | $(BUILD_FOLDER)/$(EXAMPLE_FOLDER) 
 	$(CC) $(FLAGS) $< -o $@ -L$(BUILD_FOLDER) -l$(STATIC_TARGET_NAME)
 
+# -------------
+# Build tests 
+# _____________
+
 $(BUILD_FOLDER)/$(TEST_FOLDER)/%: $(TEST_FOLDER)/%.cpp $(STATIC_TARGET) | $(BUILD_FOLDER)/$(TEST_FOLDER) 
 	$(CC) $(FLAGS) $< -o $@ -L$(BUILD_FOLDER) -l$(STATIC_TARGET_NAME)
+
+
+# -------------
+# Build library
+# _____________
 
 .PHONY: static
 static: $(STATIC_TARGET)
@@ -45,6 +58,10 @@ $(OBJ_FOLDER)/%.o: $(SOURCE_FOLDER)/%.cpp $(HPP_FILES) | $(OBJ_FOLDER)
 
 $(STATIC_TARGET): $(OBJ_FILES) | $(BUILD_FOLDER)
 	ar rcs $@ $^ 
+
+# ------------
+# Make folders
+# ____________
 
 $(BUILD_FOLDER)/$(EXAMPLE_FOLDER): 
 	mkdir -p $@
@@ -57,6 +74,11 @@ $(OBJ_FOLDER):
 
 $(BUILD_FOLDER):
 	mkdir -p $@
+
+
+# --------
+# Cleaning
+# ________
 
 .PHONY: clean
 clean: 
