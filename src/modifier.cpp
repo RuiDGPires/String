@@ -50,6 +50,17 @@ static std::wstring get_wcolor(const Color &c) {
     }
 }
 
+void WordColorer::set_index(size_t i) {
+    if (cache)
+        cache->invalidate();
+
+    *index = i;
+}
+
+size_t WordColorer::get_index() const {
+    return *index;
+}
+
 std::wstring WordColorer::apply(const std::wstring &str) const {
     size_t current_word = 0;
     bool within_word = false;
@@ -73,6 +84,9 @@ std::wstring WordColorer::apply(const std::wstring &str) const {
         }
         new_str += str[i];
     }
+
+    if (within_word && current_word == index)
+        new_str += L"" RESET_STR;
 
     return new_str;
 }

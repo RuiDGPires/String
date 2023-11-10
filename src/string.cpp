@@ -1,71 +1,42 @@
 #include <string.hpp>
+#include <cache.hpp>
 
 using namespace rui;
 
-template<typename T>
-Cache<T>::Cache() {
-    this->updated = false;
-}
-
-template<typename T>
-Cache<T>::Cache(T v) {
-    this->value = v;
-    this->updated = true;
-}
-
-template<typename T>
-void Cache<T>::invalidate() {
-    this->updated = false;
-}
-
-template<typename T>
-void Cache<T>::update(T v) {
-    this->updated = true;
-    this->value = v;
-}
-
-template<typename T>
-bool Cache<T>::is_valid() const {
-    return this->updated;
-}
-
-template<typename T>
-T Cache<T>::get() const {
-    return this->value;
-}
-
 String::String() {
     string = L"";
+    this->cache = std::make_shared<Cache<std::string>>(render());
 }
 
 String::String(const std::string &s) {
     string = converter.from_bytes(s);
+    this->cache = std::make_shared<Cache<std::string>>(render());
 }
 
 String::String(const std::wstring &s) {
     string = s;
+    this->cache = std::make_shared<Cache<std::string>>(render());
 }
 
 String::String(const char *s) {
     string = converter.from_bytes(s);
+    this->cache = std::make_shared<Cache<std::string>>(render());
 }
 
-const std::string &String::render() {
-    if (!cache.is_valid()) {
-        // Apply modifiers
-        std::wstring new_string = string;
-        for (const auto &modifier : modifiers) {
-            new_string = modifier->apply(string);
-        }
+std::string String::render() {
+    // Apply modifiers
+    std::wstring new_string = string;
 
-        cache.update(std::string(converter.to_bytes(new_string)));
-    }
+    for (const auto &modifier : modifiers)
+        new_string = modifier->apply(string);
 
-    return cache.value;
+    return std::string(converter.to_bytes(new_string));
 }
 
 const std::string &String::str() {
-    return this->render();
+    if (!cache->is_valid())
+        cache->update(this->render());
+    return cache->value;
 }
 
 wchar_t String::at(size_t i) {
@@ -81,8 +52,9 @@ size_t String::size() const {
 }
 
 String &String::mod(const std::shared_ptr<Modifier> &modifier) {
-    this->modifiers.push_back(modifier);
-    this->cache.invalidate();
+    modifier->cache = this->cache;
+    this->modifiers.push_back(std::move(modifier));
+    this->cache->invalidate();
     return (*this);
 }
 
@@ -95,45 +67,45 @@ String& String::operator=(const String &other) {
 String& String::operator=(const char *other) {
     string = converter.from_bytes(other);
     modifiers.clear();
-    this->cache.invalidate();
+    this->cache->invalidate();
     return *this;
 }
 String& String::operator=(const std::wstring &other) {
     string = other;
     modifiers.clear();
-    this->cache.invalidate();
+    this->cache->invalidate();
     return *this;
 }
 
 String& String::operator=(const std::string & other) {
     string = converter.from_bytes(other);
     modifiers.clear();
-    this->cache.invalidate();
+    this->cache->invalidate();
     return *this;
 }
 
 String &String::operator+=(const String &other) {
     this->string += other.string;
     this->modifiers.insert(this->modifiers.end(), other.modifiers.begin(), other.modifiers.end());
-    this->cache.invalidate();
+    this->cache->invalidate();
     return (*this);
 }
 
 String &String::operator+=(const char *other) {
     this->string += converter.from_bytes(other);
-    this->cache.invalidate();
+    this->cache->invalidate();
     return (*this);
 }
 
 String &String::operator+=(const std::wstring &other) {
     this->string += other;
-    this->cache.invalidate();
+    this->cache->invalidate();
     return (*this);
 }
 
 String &String::operator+=(const std::string & other) {
     this->string += converter.from_bytes(other);
-    this->cache.invalidate();
+    this->cache->invalidate();
     return (*this);
 }
 

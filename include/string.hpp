@@ -5,32 +5,19 @@
 #include <locale>
 #include <vector>
 #include <memory>
+
+#include "cache.hpp"
 #include "modifier.hpp"
 
 namespace rui {
-    template<typename T>
-    struct Cache {
-        bool updated;
-        T value;
-        
-        Cache();
-
-        Cache(T v);
-
-        void invalidate();
-        void update(T v);
-        bool is_valid() const;
-        T get() const;
-    };
-
     class String {
         private:
             std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
             std::wstring string;
             std::vector<std::shared_ptr<Modifier>> modifiers;
-            Cache<std::string> cache;
+            std::shared_ptr<Cache<std::string>> cache;
 
-            const std::string &render();
+            std::string render();
 
         public:
             String();
