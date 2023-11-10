@@ -57,6 +57,12 @@ size_t String::size() const {
     return string.size();
 }
 
+void String::clear() {
+    this->string.clear();
+    this->modifiers.clear();
+    this->cache->invalidate();
+}
+
 String &String::mod(const std::shared_ptr<Modifier> &modifier) {
     modifier->cache = this->cache;
     this->modifiers.push_back(std::move(modifier));

@@ -35,6 +35,8 @@ namespace rui {
 
             size_t size() const;
 
+            void clear();
+
             String &mod(const std::shared_ptr<Modifier> &modifier);
 
             String &operator=(const String &other);
