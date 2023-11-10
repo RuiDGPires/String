@@ -18,7 +18,7 @@ int main(int argc, const char *argv[]) {
     s.mod(std::make_shared<WordColorer>(4, Color::YELLOW)); 
 
     cout << s << "\n";
-    s += " доброе!";
+    s += " привет!";
     cout << s << "\n";
     colorer->set_index(colorer->get_index() - 1);
     cout << s << "\n";
