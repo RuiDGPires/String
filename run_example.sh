@@ -1,14 +1,24 @@
 #!/bin/sh
 
-EXEC="./build/a.out"
+EXEC_FOLDER="./build/examples"
 
-make
+EXE=
+if [ -z $1 ]
+then
+    EXE=$EXEC_FOLDER/default
+    echo No example provided
+else
+    EXE=$EXEC_FOLDER/$1
+    shift
+fi
+
+make $EXE 
 
 if [ $? -eq 0 ]
 then
-    echo Running $EXEC:
+    echo Running $EXE:
     echo 
-    $EXEC $@
+    $EXE $@
 else
     echo ERROR: Compilation Error
 fi
