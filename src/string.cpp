@@ -45,12 +45,12 @@ const std::string &String::str() {
     return cache->value;
 }
 
-wchar_t String::at(size_t i) {
-    return string[i];
+wchar_t String::at(size_t i) const{
+    return string.at(i);
 }
 
-wchar_t String::operator[](size_t i) {
-    return this->at(i);
+wchar_t String::operator[](size_t i) const {
+    return this->string[i];
 }
 
 size_t String::size() const {

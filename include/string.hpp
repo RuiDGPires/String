@@ -30,8 +30,8 @@ namespace rui {
 
             const std::string &str();
 
-            wchar_t at(size_t i);
-            wchar_t operator[](size_t i);
+            wchar_t at(size_t i) const;
+            wchar_t operator[](size_t i) const;
 
             size_t size() const;
 
