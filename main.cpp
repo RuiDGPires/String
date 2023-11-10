@@ -7,7 +7,7 @@ using namespace rui;
 int main(int argc, const char *argv[]) {
     String s = "abcde 书⼈ яшвфд δβΩω";
     
-    /* Indexes are */
+    /* Indexes are 1-based */
     size_t index = 3; // default
                       
     if (argc >= 2)
